@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast, Toaster } from "sonner";
 import { HabitDialog } from "@/components/lumen/habit-dialog";
 import { MonthView } from "@/components/lumen/month-view";
+import { PathView } from "@/components/lumen/path-view";
 import { WeekView } from "@/components/lumen/week-view";
 import {
   AlertDialog,
@@ -20,15 +21,31 @@ import {
   dateKey,
   format,
   isFutureDay,
+  parseKey,
   todayDate,
   weekDays,
 } from "@/lib/habits/dates";
+import {
+  bestStreak,
+  countPerfectDays,
+  evaluateSeals,
+  getChapterProgress,
+  newSeals,
+  totalMarks,
+  weekPact,
+} from "@/lib/habits/progress";
 import { dayCompletionCount, overallStreak } from "@/lib/habits/stats";
 import { useHabitStore } from "@/lib/habits/store";
 import type { Habit, HabitColor, HabitIconId } from "@/lib/habits/types";
 import { cn } from "@/lib/utils";
 
-type View = "week" | "month";
+type View = "week" | "month" | "path";
+
+const VIEWS: { id: View; label: string }[] = [
+  { id: "week", label: "Week" },
+  { id: "month", label: "Month" },
+  { id: "path", label: "Path" },
+];
 
 export function LumenApp() {
   const habits = useHabitStore((s) => s.habits);
@@ -77,6 +94,48 @@ export function LumenApp() {
     () => overallStreak(habits, completions, today),
     [habits, completions, today],
   );
+  const marks = useMemo(() => totalMarks(completions), [completions]);
+  const chapter = useMemo(() => getChapterProgress(marks), [marks]);
+  const seals = useMemo(
+    () => evaluateSeals(habits, completions, today),
+    [habits, completions, today],
+  );
+  const pact = useMemo(
+    () => weekPact(habits, completions, today),
+    [habits, completions, today],
+  );
+  const best = useMemo(() => bestStreak(habits, completions), [habits, completions]);
+  const perfectDays = useMemo(
+    () => countPerfectDays(habits, completions),
+    [habits, completions],
+  );
+
+  function handleToggle(habitId: string, key: string) {
+    const prev = useHabitStore.getState().completions;
+    const wasDone = Boolean(prev[habitId]?.[key]);
+    toggle(habitId, key);
+    if (wasDone) return;
+    const next = useHabitStore.getState().completions;
+    const day = parseKey(key);
+    const count = dayCompletionCount(habits, next, day);
+    if (count.total > 0 && count.done === count.total) {
+      toast("Perfect day");
+      return;
+    }
+    const unlocked = newSeals(
+      evaluateSeals(habits, prev, today),
+      evaluateSeals(habits, next, today),
+    );
+    if (unlocked[0]) {
+      toast(`Seal · ${unlocked[0].title}`);
+      return;
+    }
+    const beforeChapter = getChapterProgress(totalMarks(prev)).current.id;
+    const after = getChapterProgress(totalMarks(next));
+    if (beforeChapter !== after.current.id) {
+      toast(`Chapter ${after.current.name}`);
+    }
+  }
 
   function handleSubmit(draft: { name: string; color: HabitColor; icon: HabitIconId }) {
     if (editor && editor !== "new") {
@@ -100,7 +159,7 @@ export function LumenApp() {
     todayCount.total === 0
       ? "Add a ritual to begin"
       : remaining === 0
-        ? "Every mark kept"
+        ? "Perfect day"
         : remaining === todayCount.total
           ? "Nothing marked yet"
           : `${todayCount.done} of ${todayCount.total} kept`;
@@ -130,6 +189,18 @@ export function LumenApp() {
                   <span className="text-muted italic"> the {format(today, "do")}</span>
                 </h1>
                 <p className="mt-3 text-sm text-muted">{status}</p>
+                <p className="mt-1 text-sm text-subtle">
+                  {chapter.current.name}
+                  {chapter.next ? (
+                    <>
+                      {" "}
+                      · <span className="tabular-nums">{chapter.remaining}</span> to{" "}
+                      {chapter.next.name}
+                    </>
+                  ) : (
+                    " · last chapter"
+                  )}
+                </p>
               </div>
               <ProgressRing done={todayCount.done} total={todayCount.total} />
             </div>
@@ -140,20 +211,20 @@ export function LumenApp() {
           ) : (
             <>
               <div className="mb-6 flex justify-center">
-                <div className="inline-flex rounded-lg bg-fg/5 p-1">
-                  {(["week", "month"] as const).map((id) => (
+                <div className="inline-flex w-full max-w-sm rounded-lg bg-fg/5 p-1">
+                  {VIEWS.map((item) => (
                     <button
-                      key={id}
+                      key={item.id}
                       type="button"
-                      onClick={() => setView(id)}
+                      onClick={() => setView(item.id)}
                       className={cn(
-                        "h-9 min-w-20 rounded-md px-4 text-sm font-medium capitalize transition-[background-color,color,box-shadow] duration-[150ms] ease-[var(--ease-out)]",
-                        view === id
+                        "h-9 flex-1 rounded-md px-3 text-sm font-medium transition-[background-color,color,box-shadow] duration-[150ms] ease-[var(--ease-out)]",
+                        view === item.id
                           ? "bg-elevated text-fg shadow-[var(--shadow-border)]"
                           : "text-muted hover:text-fg",
                       )}
                     >
-                      {id}
+                      {item.label}
                     </button>
                   ))}
                 </div>
@@ -166,11 +237,11 @@ export function LumenApp() {
                   weekAnchor={weekAnchor}
                   today={today}
                   onWeekAnchorChange={setWeekAnchor}
-                  onToggle={toggle}
+                  onToggle={handleToggle}
                   onEdit={setEditor}
                   onDelete={setDeleting}
                 />
-              ) : (
+              ) : view === "month" ? (
                 <MonthView
                   habits={habits}
                   completions={completions}
@@ -179,26 +250,40 @@ export function LumenApp() {
                   today={today}
                   onMonthAnchorChange={setMonthAnchor}
                   onSelectDate={setSelectedDate}
-                  onToggle={toggle}
+                  onToggle={handleToggle}
+                />
+              ) : (
+                <PathView
+                  habits={habits}
+                  completions={completions}
+                  today={today}
+                  chapter={chapter}
+                  seals={seals}
+                  pact={pact}
+                  best={best}
+                  perfectDays={perfectDays}
+                  marks={marks}
                 />
               )}
 
-              <div className="mt-8 flex flex-col items-center gap-4">
-                <Button variant="outline" onClick={() => setEditor("new")}>
-                  <Plus className="size-4" />
-                  New ritual
-                </Button>
-                <p className="text-center text-sm text-muted">
-                  <span className="tabular-nums">{weekCount.done}</span> of{" "}
-                  <span className="tabular-nums">{weekCount.total}</span> marks this week
-                  {perfect > 0 ? (
-                    <>
-                      {" "}
-                      · <span className="tabular-nums">{perfect}</span>-day perfect run
-                    </>
-                  ) : null}
-                </p>
-              </div>
+              {view !== "path" ? (
+                <div className="mt-8 flex flex-col items-center gap-4">
+                  <Button variant="outline" onClick={() => setEditor("new")}>
+                    <Plus className="size-4" />
+                    New ritual
+                  </Button>
+                  <p className="text-center text-sm text-muted">
+                    <span className="tabular-nums">{weekCount.done}</span> of{" "}
+                    <span className="tabular-nums">{weekCount.total}</span> this week
+                    {perfect > 0 ? (
+                      <>
+                        {" "}
+                        · <span className="tabular-nums">{perfect}</span>-day perfect run
+                      </>
+                    ) : null}
+                  </p>
+                </div>
+              ) : null}
             </>
           )}
         </main>

@@ -178,7 +178,14 @@ function HabitWeekRow({
           </p>
         </div>
         <div className="flex items-center gap-1 md:hidden">
-          <span className="tabular-nums text-sm font-medium">{stats.currentStreak}</span>
+          <span
+            className={cn(
+              "tabular-nums text-sm font-medium",
+              stats.currentStreak >= 7 && "text-primary",
+            )}
+          >
+            {stats.currentStreak}
+          </span>
           <RowMenu habit={habit} onEdit={onEdit} onDelete={onDelete} />
         </div>
       </div>
@@ -199,7 +206,12 @@ function HabitWeekRow({
       <div className="hidden w-10 shrink-0 justify-center md:flex">
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="tabular-nums text-sm font-medium text-fg">
+            <span
+              className={cn(
+                "tabular-nums text-sm font-medium",
+                stats.currentStreak >= 7 ? "text-primary" : "text-fg",
+              )}
+            >
               {stats.currentStreak}
             </span>
           </TooltipTrigger>

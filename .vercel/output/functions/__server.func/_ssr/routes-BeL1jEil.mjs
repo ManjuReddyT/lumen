@@ -1,7 +1,7 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { A as Slot, P as require_jsx_runtime, a as Overlay2, c as Title2, d as DialogContent$1, f as DialogDescription$1, h as DialogTitle$1, i as Description2, l as Dialog$1, m as DialogPortal$1, n as Cancel, o as Portal2, p as DialogOverlay$1, r as Content2, s as Root2, t as Action, u as DialogClose } from "../_libs/@radix-ui/react-alert-dialog+[...].mjs";
-import { C as Brain, S as Check, T as Bike, _ as Dumbbell, a as Trash2, b as ChevronRight, c as Pencil, d as Moon, f as Leaf, g as Ellipsis, h as Flame, l as PenLine, m as Footprints, n as Wind, o as Sun, p as Heart, r as Utensils, s as Plus, t as X, u as Music, v as Droplets, w as BookOpen, x as ChevronLeft, y as Coffee } from "../_libs/lucide-react.mjs";
+import { A as BookOpen, C as ChevronRight, D as CalendarCheck, E as CheckCheck, M as Bike, O as Brain, S as Coffee, T as Check, _ as Footprints, a as Trash2, b as Dumbbell, c as Plus, d as Orbit, f as Music, g as Heart, h as Layers, j as BookMarked, k as Bookmark, l as Pencil, m as Leaf, n as Wind, o as Sun, p as Moon, r as Utensils, s as Repeat, t as X, u as PenLine, v as Flame, w as ChevronLeft, x as Droplets, y as Ellipsis } from "../_libs/lucide-react.mjs";
 import { n as toast, t as Toaster } from "../_libs/sonner.mjs";
 import { n as clsx, t as cva } from "../_libs/class-variance-authority+clsx.mjs";
 import { t as twMerge } from "../_libs/tailwind-merge.mjs";
@@ -10,7 +10,7 @@ import { a as endOfWeek, c as endOfMonth, d as startOfWeek, f as addMonths, i as
 import { a as Separator2, i as Root2$1, n as Item2, o as Trigger, r as Portal2$1, t as Content2$1 } from "../_libs/@radix-ui/react-dropdown-menu+[...].mjs";
 import { a as Trigger$1, i as Root3, n as Portal, r as Provider, t as Content2$2 } from "../_libs/@radix-ui/react-tooltip+[...].mjs";
 import { n as create, t as persist } from "../_libs/zustand.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-BXdXE8UN.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-BeL1jEil.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function cn(...inputs) {
@@ -349,6 +349,10 @@ function HabitDialog({ open, habit, onOpenChange, onSubmit }) {
 function dateKey(date) {
 	return format(date, "yyyy-MM-dd");
 }
+function parseKey(key) {
+	const [year, month, day] = key.split("-").map(Number);
+	return new Date(year, month - 1, day);
+}
 function todayDate() {
 	return startOfDay(/* @__PURE__ */ new Date());
 }
@@ -660,6 +664,192 @@ function MonthStrip({ habit, completions, days, today, onToggle }) {
 		]
 	});
 }
+var SEAL_ICONS = {
+	"first-light": Sun,
+	"seven-days": Repeat,
+	"all-kept": CheckCheck,
+	"week-kept": CalendarCheck,
+	fifty: Bookmark,
+	hundred: BookMarked,
+	"deep-streak": Orbit,
+	constellation: Layers
+};
+function PathView({ habits, completions, today, chapter, seals, pact, best, perfectDays, marks }) {
+	const earnedCount = seals.filter((seal) => seal.earned).length;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "flex flex-col gap-8",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "text-xs tracking-wide text-subtle uppercase",
+					children: "Chapter"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					className: "font-display mt-1 text-4xl font-medium tracking-tight",
+					children: chapter.current.name
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+					className: "mt-2 text-sm text-muted",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							className: "tabular-nums",
+							children: marks
+						}),
+						" light",
+						chapter.next ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+							" ",
+							"· ",
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "tabular-nums",
+								children: chapter.remaining
+							}),
+							" to ",
+							chapter.next.name
+						] }) : " · the last chapter"
+					]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Meter, { value: chapter.ratio })
+			] }),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-baseline justify-between gap-3",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-xs tracking-wide text-subtle uppercase",
+						children: "This week’s pact"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						className: "text-sm tabular-nums text-muted",
+						children: [
+							pact.done,
+							"/",
+							pact.total
+						]
+					})]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Meter, {
+					value: pact.ratio,
+					className: "mt-3"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-2 text-sm text-muted",
+					children: pact.total === 0 ? "Add a ritual to begin the week." : pact.ratio >= 1 ? "This week is full." : `Keep ${pact.total - pact.done} more to fill the week.`
+				})
+			] }),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "mb-3 flex items-baseline justify-between gap-3",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "text-xs tracking-wide text-subtle uppercase",
+					children: "Seals"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+					className: "text-sm tabular-nums text-muted",
+					children: [
+						earnedCount,
+						"/",
+						seals.length
+					]
+				})]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "grid grid-cols-2 gap-3",
+				children: seals.map((seal) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SealCard, { seal }, seal.id))
+			})] }),
+			habits.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "mb-3 text-xs tracking-wide text-subtle uppercase",
+				children: "Rituals"
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+				className: "flex flex-col gap-2",
+				children: habits.map((habit) => {
+					const Icon = getHabitIcon(habit.icon);
+					const styles = COLOR_STYLES[habit.color];
+					const stats = getHabitStats(habit, completions, today);
+					return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+						className: "flex items-center gap-3 rounded-lg bg-surface px-3 py-2.5 shadow-[var(--shadow-border)]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: cn("flex size-9 shrink-0 items-center justify-center rounded-sm", styles.soft, styles.text),
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, {
+									className: "size-4",
+									strokeWidth: 1.75
+								})
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "min-w-0 flex-1 truncate font-medium",
+								children: habit.name
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "text-xs tabular-nums text-muted",
+								children: [
+									stats.currentStreak,
+									" now · best ",
+									stats.longestStreak
+								]
+							})
+						]
+					}, habit.id);
+				})
+			})] }) : null,
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+				className: "text-center text-sm text-muted",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "tabular-nums",
+						children: marks
+					}),
+					" marks ·",
+					" ",
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "tabular-nums",
+						children: best
+					}),
+					"-day best ·",
+					" ",
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "tabular-nums",
+						children: perfectDays
+					}),
+					" perfect",
+					" ",
+					perfectDays === 1 ? "day" : "days"
+				]
+			})
+		]
+	});
+}
+function Meter({ value, className }) {
+	const pct = Math.round(Math.min(1, Math.max(0, value)) * 100);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: cn("mt-4 h-2 overflow-hidden rounded-full bg-fg/8", className),
+		role: "progressbar",
+		"aria-valuemin": 0,
+		"aria-valuemax": 100,
+		"aria-valuenow": pct,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "h-full w-full origin-left rounded-full bg-primary transition-transform duration-[250ms] ease-[var(--ease-smooth-out)]",
+			style: { transform: `scaleX(${pct / 100})` }
+		})
+	});
+}
+function SealCard({ seal }) {
+	const Icon = SEAL_ICONS[seal.id];
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: cn("flex min-h-28 flex-col rounded-xl p-4", seal.earned ? "bg-surface shadow-[var(--shadow-border)]" : "ring-1 ring-border-strong ring-inset"),
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+				className: cn("flex size-9 items-center justify-center rounded-md", seal.earned ? "bg-primary/12 text-primary" : "text-subtle"),
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, {
+					className: "size-4",
+					strokeWidth: 1.75
+				})
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: cn("mt-3 font-medium", !seal.earned && "text-muted"),
+				children: seal.title
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "mt-1 text-xs text-subtle",
+				children: seal.hint
+			})
+		]
+	});
+}
 var DropdownMenu = Root2$1;
 var DropdownMenuTrigger = Trigger;
 var DropdownMenuContent = import_react.forwardRef(({ className, sideOffset = 6, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal2$1, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2$1, {
@@ -815,7 +1005,7 @@ function HabitWeekRow({ habit, completions, days, today, onToggle, onEdit, onDel
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "flex items-center gap-1 md:hidden",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "tabular-nums text-sm font-medium",
+							className: cn("tabular-nums text-sm font-medium", stats.currentStreak >= 7 && "text-primary"),
 							children: stats.currentStreak
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RowMenu, {
 							habit,
@@ -842,7 +1032,7 @@ function HabitWeekRow({ habit, completions, days, today, onToggle, onEdit, onDel
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Tooltip, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TooltipTrigger, {
 					asChild: true,
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-						className: "tabular-nums text-sm font-medium text-fg",
+						className: cn("tabular-nums text-sm font-medium", stats.currentStreak >= 7 ? "text-primary" : "text-fg"),
 						children: stats.currentStreak
 					})
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TooltipContent, { children: [
@@ -941,6 +1131,189 @@ var AlertDialogCancel = import_react.forwardRef(({ className, ...props }, ref) =
 	...props
 }));
 AlertDialogCancel.displayName = Cancel.displayName;
+var CHAPTERS = [
+	{
+		id: "spark",
+		name: "Spark",
+		min: 0
+	},
+	{
+		id: "wick",
+		name: "Wick",
+		min: 12
+	},
+	{
+		id: "lamp",
+		name: "Lamp",
+		min: 40
+	},
+	{
+		id: "lantern",
+		name: "Lantern",
+		min: 80
+	},
+	{
+		id: "beacon",
+		name: "Beacon",
+		min: 140
+	},
+	{
+		id: "hearth",
+		name: "Hearth",
+		min: 220
+	},
+	{
+		id: "lumen",
+		name: "Lumen",
+		min: 320
+	}
+];
+var SEAL_COPY = {
+	"first-light": {
+		title: "First light",
+		hint: "Keep any ritual once."
+	},
+	"seven-days": {
+		title: "Seven days",
+		hint: "A seven-day streak on one ritual."
+	},
+	"all-kept": {
+		title: "All kept",
+		hint: "Finish every ritual on the same day."
+	},
+	"week-kept": {
+		title: "Week kept",
+		hint: "Fill every square in a full week."
+	},
+	fifty: {
+		title: "Fifty marks",
+		hint: "Leave fifty marks in the journal."
+	},
+	hundred: {
+		title: "A hundred",
+		hint: "Reach one hundred marks."
+	},
+	"deep-streak": {
+		title: "Deep streak",
+		hint: "Hold a ritual for fourteen days."
+	},
+	constellation: {
+		title: "Constellation",
+		hint: "Keep four rituals at once."
+	}
+};
+var SEAL_ORDER = [
+	"first-light",
+	"seven-days",
+	"all-kept",
+	"week-kept",
+	"fifty",
+	"hundred",
+	"deep-streak",
+	"constellation"
+];
+function totalMarks(completions) {
+	let n = 0;
+	for (const map of Object.values(completions)) n += Object.keys(map).length;
+	return n;
+}
+function getChapterProgress(marks) {
+	let current = CHAPTERS[0];
+	let next = CHAPTERS[1] ?? null;
+	for (let i = 0; i < CHAPTERS.length; i += 1) if (marks >= CHAPTERS[i].min) {
+		current = CHAPTERS[i];
+		next = CHAPTERS[i + 1] ?? null;
+	}
+	if (!next) return {
+		current,
+		next: null,
+		marks,
+		inChapter: 1,
+		span: 1,
+		ratio: 1,
+		remaining: 0
+	};
+	const span = next.min - current.min;
+	const inChapter = marks - current.min;
+	return {
+		current,
+		next,
+		marks,
+		inChapter,
+		span,
+		ratio: Math.min(1, inChapter / span),
+		remaining: Math.max(0, next.min - marks)
+	};
+}
+function bestStreak(habits, completions) {
+	if (habits.length === 0) return 0;
+	return Math.max(0, ...habits.map((habit) => longestStreak(completions, habit.id)));
+}
+function countPerfectDays(habits, completions) {
+	if (habits.length === 0) return 0;
+	const keys = /* @__PURE__ */ new Set();
+	for (const map of Object.values(completions)) for (const key of Object.keys(map)) keys.add(key);
+	let n = 0;
+	for (const key of keys) if (habits.every((habit) => completions[habit.id]?.[key])) n += 1;
+	return n;
+}
+function weekIsFilled(habits, completions, weekStart, today) {
+	if (habits.length === 0) return false;
+	for (let i = 0; i < 7; i += 1) {
+		const day = addDays(weekStart, i);
+		if (isFutureDay(day, today)) return false;
+		const { done, total } = dayCompletionCount(habits, completions, day);
+		if (total === 0 || done < total) return false;
+	}
+	return true;
+}
+function hasFilledWeek(habits, completions, today = todayDate()) {
+	const thisStart = startOfWeek(today, { weekStartsOn: 1 });
+	for (let w = 0; w < 12; w += 1) if (weekIsFilled(habits, completions, addDays(thisStart, -7 * w), today)) return true;
+	return false;
+}
+function weekPact(habits, completions, today = todayDate()) {
+	const start = startOfWeek(today, { weekStartsOn: 1 });
+	let done = 0;
+	let total = 0;
+	for (let i = 0; i < 7; i += 1) {
+		const day = addDays(start, i);
+		if (isFutureDay(day, today)) continue;
+		const count = dayCompletionCount(habits, completions, day);
+		done += count.done;
+		total += count.total;
+	}
+	return {
+		done,
+		total,
+		ratio: total === 0 ? 0 : done / total
+	};
+}
+function evaluateSeals(habits, completions, today = todayDate()) {
+	const marks = totalMarks(completions);
+	const streak = bestStreak(habits, completions);
+	const perfect = countPerfectDays(habits, completions);
+	const earned = {
+		"first-light": marks >= 1,
+		"seven-days": streak >= 7,
+		"all-kept": perfect >= 1,
+		"week-kept": hasFilledWeek(habits, completions, today),
+		fifty: marks >= 50,
+		hundred: marks >= 100,
+		"deep-streak": streak >= 14,
+		constellation: habits.length >= 4
+	};
+	return SEAL_ORDER.map((id) => ({
+		id,
+		title: SEAL_COPY[id].title,
+		hint: SEAL_COPY[id].hint,
+		earned: earned[id]
+	}));
+}
+function newSeals(before, after) {
+	const prev = new Set(before.filter((seal) => seal.earned).map((seal) => seal.id));
+	return after.filter((seal) => seal.earned && !prev.has(seal.id));
+}
 function hash01(input) {
 	let h = 2166136261;
 	for (let i = 0; i < input.length; i += 1) {
@@ -1061,6 +1434,20 @@ var useHabitStore = create()(persist((set, get) => ({
 		hasSeeded: state.hasSeeded
 	})
 }));
+var VIEWS = [
+	{
+		id: "week",
+		label: "Week"
+	},
+	{
+		id: "month",
+		label: "Month"
+	},
+	{
+		id: "path",
+		label: "Path"
+	}
+];
 function LumenApp() {
 	const habits = useHabitStore((s) => s.habits);
 	const completions = useHabitStore((s) => s.completions);
@@ -1113,6 +1500,41 @@ function LumenApp() {
 		completions,
 		today
 	]);
+	const marks = (0, import_react.useMemo)(() => totalMarks(completions), [completions]);
+	const chapter = (0, import_react.useMemo)(() => getChapterProgress(marks), [marks]);
+	const seals = (0, import_react.useMemo)(() => evaluateSeals(habits, completions, today), [
+		habits,
+		completions,
+		today
+	]);
+	const pact = (0, import_react.useMemo)(() => weekPact(habits, completions, today), [
+		habits,
+		completions,
+		today
+	]);
+	const best = (0, import_react.useMemo)(() => bestStreak(habits, completions), [habits, completions]);
+	const perfectDays = (0, import_react.useMemo)(() => countPerfectDays(habits, completions), [habits, completions]);
+	function handleToggle(habitId, key) {
+		const prev = useHabitStore.getState().completions;
+		const wasDone = Boolean(prev[habitId]?.[key]);
+		toggle(habitId, key);
+		if (wasDone) return;
+		const next = useHabitStore.getState().completions;
+		const day = parseKey(key);
+		const count = dayCompletionCount(habits, next, day);
+		if (count.total > 0 && count.done === count.total) {
+			toast("Perfect day");
+			return;
+		}
+		const unlocked = newSeals(evaluateSeals(habits, prev, today), evaluateSeals(habits, next, today));
+		if (unlocked[0]) {
+			toast(`Seal · ${unlocked[0].title}`);
+			return;
+		}
+		const beforeChapter = getChapterProgress(totalMarks(prev)).current.id;
+		const after = getChapterProgress(totalMarks(next));
+		if (beforeChapter !== after.current.id) toast(`Chapter ${after.current.name}`);
+	}
 	function handleSubmit(draft) {
 		if (editor && editor !== "new") {
 			updateHabit(editor.id, draft);
@@ -1129,7 +1551,7 @@ function LumenApp() {
 		setDeleting(null);
 	}
 	const remaining = todayCount.total - todayCount.done;
-	const status = todayCount.total === 0 ? "Add a ritual to begin" : remaining === 0 ? "Every mark kept" : remaining === todayCount.total ? "Nothing marked yet" : `${todayCount.done} of ${todayCount.total} kept`;
+	const status = todayCount.total === 0 ? "Add a ritual to begin" : remaining === 0 ? "Perfect day" : remaining === todayCount.total ? "Nothing marked yet" : `${todayCount.done} of ${todayCount.total} kept`;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TooltipProvider, {
 		delayDuration: 250,
 		children: [
@@ -1168,6 +1590,20 @@ function LumenApp() {
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 									className: "mt-3 text-sm text-muted",
 									children: status
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+									className: "mt-1 text-sm text-subtle",
+									children: [chapter.current.name, chapter.next ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+										" ",
+										"· ",
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "tabular-nums",
+											children: chapter.remaining
+										}),
+										" to",
+										" ",
+										chapter.next.name
+									] }) : " · last chapter"]
 								})
 							] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProgressRing, {
 								done: todayCount.done,
@@ -1178,13 +1614,13 @@ function LumenApp() {
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 							className: "mb-6 flex justify-center",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "inline-flex rounded-lg bg-fg/5 p-1",
-								children: ["week", "month"].map((id) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "inline-flex w-full max-w-sm rounded-lg bg-fg/5 p-1",
+								children: VIEWS.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 									type: "button",
-									onClick: () => setView(id),
-									className: cn("h-9 min-w-20 rounded-md px-4 text-sm font-medium capitalize transition-[background-color,color,box-shadow] duration-[150ms] ease-[var(--ease-out)]", view === id ? "bg-elevated text-fg shadow-[var(--shadow-border)]" : "text-muted hover:text-fg"),
-									children: id
-								}, id))
+									onClick: () => setView(item.id),
+									className: cn("h-9 flex-1 rounded-md px-3 text-sm font-medium transition-[background-color,color,box-shadow] duration-[150ms] ease-[var(--ease-out)]", view === item.id ? "bg-elevated text-fg shadow-[var(--shadow-border)]" : "text-muted hover:text-fg"),
+									children: item.label
+								}, item.id))
 							})
 						}),
 						view === "week" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(WeekView, {
@@ -1193,10 +1629,10 @@ function LumenApp() {
 							weekAnchor,
 							today,
 							onWeekAnchorChange: setWeekAnchor,
-							onToggle: toggle,
+							onToggle: handleToggle,
 							onEdit: setEditor,
 							onDelete: setDeleting
-						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MonthView, {
+						}) : view === "month" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MonthView, {
 							habits,
 							completions,
 							monthAnchor,
@@ -1204,9 +1640,19 @@ function LumenApp() {
 							today,
 							onMonthAnchorChange: setMonthAnchor,
 							onSelectDate: setSelectedDate,
-							onToggle: toggle
+							onToggle: handleToggle
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PathView, {
+							habits,
+							completions,
+							today,
+							chapter,
+							seals,
+							pact,
+							best,
+							perfectDays,
+							marks
 						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						view !== "path" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "mt-8 flex flex-col items-center gap-4",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
 								variant: "outline",
@@ -1225,7 +1671,7 @@ function LumenApp() {
 										className: "tabular-nums",
 										children: weekCount.total
 									}),
-									" marks this week",
+									" this week",
 									perfect > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
 										" ",
 										"· ",
@@ -1237,7 +1683,7 @@ function LumenApp() {
 									] }) : null
 								]
 							})]
-						})
+						}) : null
 					] })]
 				})
 			}),
