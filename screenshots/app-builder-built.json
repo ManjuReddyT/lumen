@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Lumen",
+      "hasCanvas": false,
+      "bodyTextLen": 251,
+      "bodyTextHash": "be62d6e4cf4b378bbd581909e11c63e689e99a3159b2880b3751c28dbd8813f0",
+      "bodyTextPrefix": "Lumen September 2026 Sunday the 13th 2 of 4 kept 2/4 Week Month ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Lumen",
+      "hasCanvas": false,
+      "bodyTextLen": 293,
+      "bodyTextHash": "90ff626d3f549a44b98b1814fe1b779b493485fc37435d41e7b0f9547ecb5548",
+      "bodyTextPrefix": "Lumen September 2026 Sunday the 13th 2 of 4 kept 2/4 Week Month ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}
